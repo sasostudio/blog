@@ -3,13 +3,13 @@
   <title>Saso Studio (moved)</title>
   <id>https://chpark03.github.io/</id>
   <updated>2026-08-03T00:00:00+09:00</updated>
-  <link href="https://saso-studio.vercel.app/feed.xml" rel="self"/>
-  <link href="https://saso-studio.vercel.app/"/>
+  <link href="https://sasostudio.dev/feed.xml" rel="self"/>
+  <link href="https://sasostudio.dev/"/>
   <entry>
-    <title>블로그가 saso-studio.vercel.app 으로 이사했습니다 / This blog has moved</title>
+    <title>블로그가 sasostudio.dev로 이사했습니다 / This blog has moved</title>
     <id>https://saso-studio.vercel.app/#moved-2026-08</id>
     <updated>2026-08-03T00:00:00+09:00</updated>
-    <link href="https://saso-studio.vercel.app/"/>
-    <content type="text">Saso Studio 포트폴리오 허브로 통합되었습니다. 새 주소: https://saso-studio.vercel.app · 새 피드: https://saso-studio.vercel.app/feed.xml</content>
+    <link href="https://sasostudio.dev/"/>
+    <content type="text">Saso Studio 포트폴리오 허브로 통합되었습니다. 새 주소: https://sasostudio.dev · 새 피드: https://sasostudio.dev/feed.xml</content>
   </entry>
 </feed>

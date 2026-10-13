@@ -1,6 +1,6 @@
 title: Saso Studio
 description: 게임과 AI 에이전트 도구를 만들어 출시하고, 만드는 과정을 전부 공개하는 개발 스튜디오입니다. Saso Studio — games, agents, and AI tooling, built in public.
-url: "https://saso-studio.vercel.app"
+url: "https://sasostudio.dev"
 baseurl: ""
 author: CHPARK03
 lang: ko
@@ -10,6 +10,11 @@ logo: /assets/img/saso-logo.jpg
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+
+# 피드 글 ID의 고정 접두어 — 도메인이 바뀌어도 구독기에서 기존 글이 새 글로 다시 뜨지 않게 한다(feed.xml).
+# 2026-10-14 sasostudio.dev 이전 시점의 ID를 그대로 유지. 이 값은 주소가 아니라 식별자다 — 바꾸지 말 것.
+feed:
+  id_base: "https://saso-studio.vercel.app"
 
 collections:
   projects:

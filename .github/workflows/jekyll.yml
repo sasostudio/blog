@@ -1,4 +1,4 @@
-# chpark03.github.io는 saso-studio.vercel.app으로 이사 — 이 워크플로는 리다이렉트 스텁만 배포한다.
+# chpark03.github.io는 sasostudio.dev로 이사(08-03 vercel.app → 10-14 sasostudio.dev) — 이 워크플로는 리다이렉트 스텁만 배포한다.
 # 본 사이트 배포는 Vercel(프로젝트 saso-studio, main push 시 자동 빌드)이 담당한다.
 name: Deploy redirect stubs to Pages
 

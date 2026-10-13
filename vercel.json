@@ -10,5 +10,13 @@
     }
   },
   "outputDirectory": "_site",
-  "trailingSlash": true
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/:path((?!app-ads\\.txt$|googlea03ebb4f032001f5\\.html$).*)",
+      "has": [{ "type": "host", "value": "saso-studio.vercel.app" }],
+      "destination": "https://sasostudio.dev/:path",
+      "permanent": true
+    }
+  ]
 }
