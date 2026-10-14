@@ -10,6 +10,7 @@ logo: /assets/img/saso-logo.jpg
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-sitemap
 
 # 피드 글 ID의 고정 접두어 — 도메인이 바뀌어도 구독기에서 기존 글이 새 글로 다시 뜨지 않게 한다(feed.xml).
 # 2026-10-14 sasostudio.dev 이전 시점의 ID를 그대로 유지. 이 값은 주소가 아니라 식별자다 — 바꾸지 말 것.
@@ -31,6 +32,11 @@ defaults:
       path: ""
     values:
       image: /assets/img/saso-logo.jpg
+  # Search Console 소유 확인 파일은 사이트맵에서 뺀다(jekyll-sitemap)
+  - scope:
+      path: "googlea03ebb4f032001f5.html"
+    values:
+      sitemap: false
 
 permalink: /:year/:month/:day/:title/
 
