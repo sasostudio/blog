@@ -44,7 +44,7 @@ permalink: /about/
 ## Contact
 
 - Email: [sasostudio.dev@gmail.com](mailto:sasostudio.dev@gmail.com)
-- GitHub: [@CHPARK03](https://github.com/CHPARK03)
+- GitHub: [@sasostudio](https://github.com/sasostudio)
 
 ---
 
@@ -78,4 +78,4 @@ Closed projects live in the [Archive](/archive/).
 ### Contact
 
 - Email: [sasostudio.dev@gmail.com](mailto:sasostudio.dev@gmail.com)
-- GitHub: [@CHPARK03](https://github.com/CHPARK03)
+- GitHub: [@sasostudio](https://github.com/sasostudio)

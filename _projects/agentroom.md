@@ -19,7 +19,7 @@ steps:
     h: 주장을 믿지 않고, 되돌릴 수 없는 일은 사람에게 묻는다
     p: 읽기 전용 qa가 실제 파일을 직접 읽어 dev의 주장을 반박하고, qa의 APPROVED 없이는 작업이 끝나지 않는다. push·삭제·배포처럼 되돌리기 어려운 일은 전부 사람 게이트를 거친다. 별도 서버나 프레임워크 없이 구독만으로 돌고, 능력을 더하는 대신 안 쓸 때를 정하는 쪽으로 설계했다 — 네 번째 에이전트 researcher가 기본 꺼짐인 이유다.
 links:
-  - { label: "GitHub (MIT · 보관됨)", url: "https://github.com/CHPARK03/agentroom" }
+  - { label: "GitHub (MIT · 보관됨)", url: "https://github.com/sasostudio/agentroom" }
   - { label: "Dev Log: 만든 이야기", url: "/2026/07/05/agentroom-human-gated-orchestration/" }
   - { label: "Dev Log: v1.1.0 — 네 번째 에이전트", url: "/2026/07/07/agentroom-fourth-agent-default-off/" }
 ---

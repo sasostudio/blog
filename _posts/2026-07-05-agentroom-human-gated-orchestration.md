@@ -23,7 +23,7 @@ tags: [claude-code, agents, agentroom, build-in-public]
 
 내가 원한 질문은 달랐다: *중계 노동은 자동화하되, 에이전트가 나에게 거짓말할 수 없는 상태로 얼마나 멀리 갈 수 있는가?*
 
-그래서 [AgentRoom](https://github.com/CHPARK03/agentroom)을 만들었다. Claude Code 세션 하나가 **총괄(director)**을 맡아 세 서브에이전트 **planner**(설계)·**dev**(구현)·**qa**(검수)를 오가게 하는 작은 오케스트레이션 레이어다. 설계는 흔한 "자율성 우선" 가정을 뒤집는다:
+그래서 [AgentRoom](https://github.com/sasostudio/agentroom)을 만들었다. Claude Code 세션 하나가 **총괄(director)**을 맡아 세 서브에이전트 **planner**(설계)·**dev**(구현)·**qa**(검수)를 오가게 하는 작은 오케스트레이션 레이어다. 설계는 흔한 "자율성 우선" 가정을 뒤집는다:
 
 1. **dev는 스스로 "완료"를 선언할 수 없다.** 완료는 반드시 qa를 거친다. 총괄은 qa가 `APPROVED`를 반환한 뒤에만 작업을 종료한다.
 2. **qa는 물리적으로 읽기 전용이다.** 도구 권한에 Write/Edit 자체가 없어서 "조용히 고쳐놓기"가 불가능하다. 디스크의 실제 파일을 직접 읽고, dev의 *주장*과 대조한 뒤 판정을 내린다. 주장은 단서일 뿐, 증거는 파일이다.
@@ -47,7 +47,7 @@ tags: [claude-code, agents, agentroom, build-in-public]
 
 코드 0줄. 슬래시 커맨드 1개 + 마크다운 에이전트 정의 3개가 전부고, Claude Code에 내장된 서브에이전트 기능 위에서 돌아간다. 이미 쓰고 있는 구독으로 동작한다. API 키도, 서버도, 프레임워크도 없다.
 
-- 레포: [github.com/CHPARK03/agentroom](https://github.com/CHPARK03/agentroom) (MIT, 한국어/영어 문서)
+- 레포: [github.com/sasostudio/agentroom](https://github.com/sasostudio/agentroom) (MIT, 한국어/영어 문서)
 - 설치: `.claude/` 폴더를 프로젝트에 복사 → 세션 재시작 → `/agentroom <작업>`
 - 정직한 고지: Opus + 높은 reasoning effort 기준으로 설계·튜닝됐다. 약한 모델은 약한 검수자가 된다.
 
@@ -71,7 +71,7 @@ Most orchestrators optimize for one question: *how far can agents run without yo
 
 The question I actually cared about was different: *automate the relaying — but how far can agents run without being able to lie to me?*
 
-So I built [AgentRoom](https://github.com/CHPARK03/agentroom) — a small orchestration layer for Claude Code where one session becomes the **director** and ping-pongs three subagents: **planner** (design), **dev** (implementation), **qa** (review). The design inverts the usual autonomy-first assumptions:
+So I built [AgentRoom](https://github.com/sasostudio/agentroom) — a small orchestration layer for Claude Code where one session becomes the **director** and ping-pongs three subagents: **planner** (design), **dev** (implementation), **qa** (review). The design inverts the usual autonomy-first assumptions:
 
 1. **dev can never declare itself done.** Completion always routes through qa. The director terminates the run only after qa returns `APPROVED`.
 2. **qa is read-only — physically.** Its tool permissions don't include Write or Edit, so it can't "fix things quietly". It has to read the actual files on disk, compare them against what dev *claimed*, and return a verdict. Claims are leads; files are evidence.
@@ -95,7 +95,7 @@ A tool whose whole thesis is "don't trust claims, verify state" caught its own l
 
 Zero lines of code. One slash command plus three markdown agent definitions — the whole thing runs on Claude Code's built-in subagent machinery, on the subscription you already have. No API keys, no server, no framework.
 
-- Repo: [github.com/CHPARK03/agentroom](https://github.com/CHPARK03/agentroom) (MIT, docs in English and Korean)
+- Repo: [github.com/sasostudio/agentroom](https://github.com/sasostudio/agentroom) (MIT, docs in English and Korean)
 - Install: copy `.claude/` into your project, restart your session, run `/agentroom <task>`
 - Honest caveat: it was designed and tuned on Opus with high reasoning effort. Weaker models make weaker reviewers.
 

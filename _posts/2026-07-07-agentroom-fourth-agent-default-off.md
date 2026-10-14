@@ -9,7 +9,7 @@ tags: [claude-code, agents, agentroom, build-in-public]
 
 *🇬🇧 [English version below](#english-version)*
 
-지난주에 [AgentRoom](https://github.com/CHPARK03/agentroom)을 공개했다. Claude Code 세션 하나가 총괄(director)이 되어 planner·dev·qa 세 서브에이전트를 오가게 하는 오케스트레이션 레이어다. [첫 글](/2026/07/05/agentroom-human-gated-orchestration/)의 원칙은 두 문장이었다. **주장을 믿지 말고 상태를 검증하라**, 그리고 **되돌리기 어려운 일은 사람에게 물어라.**
+지난주에 [AgentRoom](https://github.com/sasostudio/agentroom)을 공개했다. Claude Code 세션 하나가 총괄(director)이 되어 planner·dev·qa 세 서브에이전트를 오가게 하는 오케스트레이션 레이어다. [첫 글](/2026/07/05/agentroom-human-gated-orchestration/)의 원칙은 두 문장이었다. **주장을 믿지 말고 상태를 검증하라**, 그리고 **되돌리기 어려운 일은 사람에게 물어라.**
 
 이번 주에 v1.1.0을 냈다. 눈에 띄는 변화는 하나다: **네 번째 역할, `researcher`(조사)를 추가했다.** 설계 전에 웹을 뒤져 사례를 모으고, 쓰려는 외부 API·라이브러리가 실제로 있는지, 무료 할당량은 얼마인지, 문서 URL은 뭔지 검증하는 에이전트다. planner가 가정 위에 설계하는 걸 막아준다.
 
@@ -71,7 +71,7 @@ v1.1.0에서 게이트가 던지는 질문이 하나 늘었다. *이게 정말 �
 
 ## English version
 
-Last week I published [AgentRoom](https://github.com/CHPARK03/agentroom) — an orchestration layer for Claude Code where one session becomes the **director** and ping-pongs three subagents: planner, dev, qa. [The first post's](/2026/07/05/agentroom-human-gated-orchestration/) thesis was two sentences: **don't trust claims, verify state**, and **stop and ask the human for anything hard to reverse.**
+Last week I published [AgentRoom](https://github.com/sasostudio/agentroom) — an orchestration layer for Claude Code where one session becomes the **director** and ping-pongs three subagents: planner, dev, qa. [The first post's](/2026/07/05/agentroom-human-gated-orchestration/) thesis was two sentences: **don't trust claims, verify state**, and **stop and ask the human for anything hard to reverse.**
 
 This week I shipped v1.1.0. The visible change is one thing: **a fourth role, `researcher`.** An agent that searches the web for prior art before design, and verifies that the external API or library you're about to use actually exists — its free quota, its docs URL. It keeps planner from designing on top of assumptions.
 
