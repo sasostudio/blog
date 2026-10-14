@@ -11,7 +11,7 @@ layout: default
     {% for m in page.meta %}<span class="chip">{{ m }}</span>{% endfor %}
   </div>
   {% if page.archived %}
-  <p class="archived-note">운영을 마친 프로젝트입니다{% if page.closed %} ({{ page.closed | date: "%Y.%m.%d" }}){% endif %}. 만든 과정과 접은 이유를 기록으로 남겨 둡니다. <a href="{{ '/archive/' | relative_url }}">Archive 전체 보기 →</a></p>
+  <p class="archived-note">운영을 마친 프로젝트{% if page.closed %} ({{ page.closed | date: "%Y.%m.%d" }}){% endif %}. 만든 과정과 접은 이유는 기록으로 보존. <a href="{{ '/archive/' | relative_url }}">Archive 전체 목록 →</a></p>
   {% else %}
   {% include play-buttons.html p=page %}
   {% endif %}

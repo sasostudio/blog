@@ -73,8 +73,8 @@ layout: default
       <span class="stamp {% if p.status contains 'LIVE' %}live{% elsif p.status contains 'WIP' %}wip{% elsif p.status contains 'CLOSED' %}closed{% else %}open{% endif %}">{{ p.status }}</span>
     </div>
     <p class="pp-blurb">{{ p.blurb }}</p>
-    {% if p.archived %}<p class="pp-note">운영을 마친 프로젝트입니다. 기록은 Archive에 남겨 두었습니다.</p>{% else %}{% include play-buttons.html p=p %}{% endif %}
-    <a class="pp-more" href="{{ p.url | relative_url }}">{% if p.archived %}프로젝트 기록 보기{% else %}케이스 스터디 보기{% endif %} <span aria-hidden="true">→</span></a>
+    {% if p.archived %}<p class="pp-note">운영을 마친 프로젝트. 기록은 Archive에 보존.</p>{% else %}{% include play-buttons.html p=p %}{% endif %}
+    <a class="pp-more" href="{{ p.url | relative_url }}">{% if p.archived %}프로젝트 기록{% else %}케이스 스터디{% endif %} <span aria-hidden="true">→</span></a>
   </aside>
   {%- endif -%}
   {%- endfor -%}
