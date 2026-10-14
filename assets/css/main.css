@@ -243,6 +243,18 @@ ul.log li.pinned .lt{ color:var(--ink); }
 .prose th{ color:var(--ink); font-weight:600; border-bottom:3px double var(--rule-strong); }
 .prose td{ color:var(--ink-soft); }
 
+/* 글 그림 — diagram(SVG 도식) · shot(게임 화면). 도식은 좁은 화면에서 600px 유지 + 가로 스크롤, 탭하면 원본 */
+.prose figure{ margin:1.8rem 0 2.1rem; }
+.prose figure a{ border-bottom:none; }
+.prose figure img{ display:block; width:100%; height:auto; }
+.prose figure.shot img{ width:auto; max-width:min(100%, 300px); margin:0 auto; border:1px solid var(--rule); border-radius:6px; }
+.prose figcaption{ margin-top:.6rem; font-size:.84rem; line-height:1.55; color:var(--faint); }
+.prose figure.shot figcaption{ text-align:center; }
+.prose figure.diagram .fig-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+@media (max-width:640px){
+  .prose figure.diagram img{ width:600px; max-width:none; }
+}
+
 /* ── footer: 장부 마감선 ─────────────────────────── */
 footer.site{ padding:2.6rem 0 4rem; border-top:3px double var(--rule-strong); margin-top:-1px; }
 footer.site .row{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem;

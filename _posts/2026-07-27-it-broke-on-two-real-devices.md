@@ -21,6 +21,8 @@ tags: [game-dev, multiplayer, mobile, build-in-public]
 
 급한 대로 보드 크기에 상한을 걸어 편차를 폰 범위로 좁혔다. 근본 해결은 좌표계를 떼어내는 것이었다. 물리는 고정된 논리 치수 위에서 돌고, 화면은 그 결과를 늘려서 보여주기만 한다. 창 크기를 바꿔도 물리적으로는 아무 일도 일어나지 않는다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/it-broke-on-two-real-devices/coordinates.ko.svg"><img src="/assets/img/posts/it-broke-on-two-real-devices/coordinates.ko.svg" width="720" height="320" loading="lazy" alt="전: 물리가 화면 픽셀 위에 있어 같은 크기 공이 큰 데스크톱 화면에 폰보다 몇 배 많이 담긴다. 후: 고정 치수의 논리 보드에서 물리를 돌리고, 폰과 데스크톱은 같은 판을 늘려서 보여주기만 한다."></a></div><figcaption>물리는 고정된 논리 보드에서 돌고 화면은 확대만 한다. 창 크기를 바꿔도 물리적으로는 아무 일도 일어나지 않는다.</figcaption></figure>
+
 엔진은 싱글 모드와 공유하고 있어서 함부로 건드릴 수 없었다. 옵션을 하나 더하되 지정하지 않으면 기존 경로가 그대로 도는 방식으로 넣었다. 터치 좌표만 화면 비율에 맞춰 보정해주면 나머지는 그대로 맞아떨어졌다.
 
 ## 같은 연출이 안 나왔다
@@ -42,6 +44,8 @@ tags: [game-dev, multiplayer, mobile, build-in-public]
 뿌리는 둘이었다. 하나는 끊긴 기기에게도 판정 권한이 남아 있었다는 것. 다른 하나는 상대 신호가 얼마나 최근 것인지 재는 기준 시점이 양쪽에서 어긋나 있었다는 것이다. 그래서 돌아온 사람을 안 돌아온 사람으로 읽었다.
 
 끊긴 쪽의 심판 자격을 아예 없앴다. 남아 있는 쪽만 판정한다. 신선도를 재는 기준도 절대 시각 하나로 통일했다. 그리고 한쪽이 끊기면 양쪽 보드를 함께 멈춘다. 돌아오면 카운트다운을 세고 재개하고, 끝내 안 돌아오면 그때 남은 사람이 결론을 낸다. 남은 사람이 결론을 낼 때도 서버에 먼저 자리를 잡은 뒤에 화면을 끝내도록 순서를 바꿨다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/it-broke-on-two-real-devices/disconnect.ko.svg"><img src="/assets/img/posts/it-broke-on-two-real-devices/disconnect.ko.svg" width="720" height="330" loading="lazy" alt="한쪽 연결이 끊기면 양쪽 보드가 함께 멈춘다. 돌아오면 카운트다운 후 재개하고, 돌아오지 않으면 남은 쪽만 판정해 서버에 결과 자리를 먼저 확보한 뒤 화면을 끝낸다. 끊긴 기기는 판정 권한이 없고, 나가기 버튼은 즉시 자기 패배다."></a></div><figcaption>끊긴 기기에서 판정 권한을 없애고, 남은 쪽은 서버에 결론을 먼저 남긴 뒤에 화면을 닫는다.</figcaption></figure>
 
 나가기 버튼은 따로 다뤘다. 통신이 끊긴 것과 스스로 나간 것은 성격이 다르다. 나가기를 누르면 그 자리에서 자기 패배로 확정된다.
 
@@ -106,6 +110,8 @@ In a merge puzzle, fitting more is simply an advantage. Whoever had the bigger s
 
 As a stopgap I capped the board size to pull the spread back into phone range. The real fix was detaching the coordinate system: physics now runs on fixed logical dimensions, and the screen only stretches the result for display. Resizing the window does nothing physical at all.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/it-broke-on-two-real-devices/coordinates.en.svg"><img src="/assets/img/posts/it-broke-on-two-real-devices/coordinates.en.svg" width="720" height="320" loading="lazy" alt="Before: physics sits on screen pixels, so a big desktop screen fits several times more same-size pieces than a phone. After: physics runs on a fixed-size logical board, and phone and desktop only scale that same board for display."></a></div><figcaption>Physics runs on a fixed logical board; the screen only scales it. Resizing the window does nothing physical.</figcaption></figure>
+
 The engine is shared with single-player, so I couldn't just rewrite it. I added one option that, when left unset, leaves the original path untouched. Correcting touch coordinates for the display ratio was the only other piece; everything else lined up on its own.
 
 ### The effects didn't match
@@ -127,6 +133,8 @@ There was already logic for one side losing its connection. Testing on two real 
 There were two roots. One was that the disconnected device still held judging authority. The other was that each side measured the freshness of the opponent's last signal from a different reference point, so a player who had come back could read as one who never did.
 
 I stripped that authority entirely: only the side that stayed connected judges. Freshness is now measured against one absolute clock. And when one side drops, both boards pause together — return, and a countdown resumes play; never return, and the remaining player finalizes. I also reordered that finalization so the remaining player claims the outcome on the server *before* ending the match locally.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/it-broke-on-two-real-devices/disconnect.en.svg"><img src="/assets/img/posts/it-broke-on-two-real-devices/disconnect.en.svg" width="720" height="330" loading="lazy" alt="When one side drops, both boards pause. If it returns, a countdown resumes play; if not, only the remaining side judges, claiming the result slot on the server before ending the match locally. The dropped device has no judging authority, and quitting is an instant own loss."></a></div><figcaption>The dropped device loses all judging authority, and the remaining side records the outcome on the server before closing the match.</figcaption></figure>
 
 Quitting is handled separately. Losing a connection and choosing to leave aren't the same thing, so pressing quit resolves immediately as your own defeat.
 

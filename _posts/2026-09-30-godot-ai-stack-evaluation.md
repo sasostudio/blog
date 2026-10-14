@@ -71,6 +71,8 @@ tags: [build-in-public, godot, game-dev, testing, ai-agents]
 
 문제는 그다음에 나왔다. **테스트 파일이 파싱에 실패하면 GUT는 경고만 찍고 그 파일을 건너뛴 뒤 "All tests passed"와 종료 코드 0을 낸다.** 종료 코드는 정직했지만 테스트가 아예 실행되지 않은 경우까지 막지는 못했다. 그래서 러너를 감싸는 스크립트가 출력에서 `Ignoring script`, `SCRIPT ERROR`, `Parse Error`를 찾으면 강제로 1을 반환하게 했다. 이 가드는 평가 기간에 최소 세 번 실제로 일했다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/godot-ai-stack-evaluation/runner-guard.ko.svg"><img src="/assets/img/posts/godot-ai-stack-evaluation/runner-guard.ko.svg" width="720" height="300" loading="lazy" alt="테스트 파일이 파싱에 실패하면 GUT는 경고만 찍고 파일을 건너뛴 뒤 All tests passed와 종료 코드 0을 낸다. 래퍼 스크립트가 출력에서 Ignoring script, SCRIPT ERROR, Parse Error를 찾으면 종료 코드 1로 강제한다."></a></div><figcaption>종료 코드는 정직했지만 실행되지 않은 테스트까지 막지는 못했다. 출력을 검사하는 가드가 거짓 통과를 실패로 뒤집는다.</figcaption></figure>
+
 그 밖에 이 조합에서 부딪힌 함정은 이렇다.
 
 | 증상 | 원인 | 성격 |
@@ -108,6 +110,8 @@ tags: [build-in-public, godot, game-dev, testing, ai-agents]
 | 0.125초 (밝기 곡선) | 순간적인 섬광, 화면 암전과 복귀 | — |
 
 직접 해 보고 "너무 빠르다"고 느낀 게 계기였다. 2초 간격 시트로는 움직임이 아예 보이지 않았다. 0.25초로 다시 떠서 카메라와 템포를 전면 교체했고, 섬광처럼 순간적인 장면은 프레임별 평균 밝기 곡선에서 급등과 암전 구간을 찾아 시점을 쟀다. 이후로는 새 연출을 넣기 전에 해당 구간을 0.25초 간격으로 먼저 뜨는 것을 규칙으로 삼았다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/godot-ai-stack-evaluation/frame-intervals.ko.svg"><img src="/assets/img/posts/godot-ai-stack-evaluation/frame-intervals.ko.svg" width="720" height="320" loading="lazy" alt="같은 4초 구간을 2초, 0.25초, 0.125초 밝기 곡선으로 본 비교. 2초 간격은 카메라 이동 구간을 통째로 건너뛰고, 0.25초 간격은 그 구간에 여러 프레임이 떨어지며, 밝기 곡선은 섬광과 암전 시점을 드러낸다."></a></div><figcaption>2초 간격은 카메라가 움직이는 구간을 통째로 건너뛴다. 0.25초로 다시 뜨자 움직임과 템포가 보였다.</figcaption></figure>
 
 ## 테스트가 못 본 것
 
@@ -192,6 +196,8 @@ First thing after setup, I measured the test runner's exit codes: 1 for a delibe
 
 Then: **when a test file fails to parse, GUT prints a warning, skips the file, and reports "All tests passed" with exit code 0.** The exit code was honest; it just had no way to cover tests that never ran. I wrapped the runner so that `Ignoring script`, `SCRIPT ERROR`, or `Parse Error` in the output forces exit code 1. That guard fired for real at least three times during the evaluation.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/godot-ai-stack-evaluation/runner-guard.en.svg"><img src="/assets/img/posts/godot-ai-stack-evaluation/runner-guard.en.svg" width="720" height="300" loading="lazy" alt="When a test file fails to parse, GUT warns, skips it, and reports All tests passed with exit code 0. A wrapper script scans the output for Ignoring script, SCRIPT ERROR, or Parse Error and forces exit code 1."></a></div><figcaption>The exit code was honest, but it couldn’t cover tests that never ran. A guard on the output turns the false pass into a failure.</figcaption></figure>
+
 Other traps worth knowing:
 
 - New classes invisible to tests until `--import` refreshes the global class cache.
@@ -215,6 +221,8 @@ Audio followed the same approach: waveforms synthesized from noise and envelopes
 Feeding eight reference videos (12 minutes, 2560×1440) straight to the agent would blow the token budget. Instead ffmpeg pulls frames into 4×4 contact sheets, and only decisive moments get re-extracted at full resolution — about 13× cheaper per frame. The first pass also revealed that one rule value in my research was wrong, invalidating every balance measurement built on it. The real footage was cheaper and more accurate than search results.
 
 The bigger lesson was sampling interval. At 2-second intervals I could see layout, objects, and rules — but no camera motion or pacing, which is exactly what felt "too fast" when I played. Re-sampling at 0.25 s gave five camera positions and their transitions, a 5–6 second turn, and the item animations. For split-second moments, I found the timing from per-frame average brightness (where a flash spikes, where the screen blacks out), measured in 0.125 s steps. Now every new piece of motion starts with a 0.25 s pass over the relevant footage.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/godot-ai-stack-evaluation/frame-intervals.en.svg"><img src="/assets/img/posts/godot-ai-stack-evaluation/frame-intervals.en.svg" width="720" height="320" loading="lazy" alt="The same 4-second span sampled every 2 s, every 0.25 s, and as a 0.125 s brightness curve. 2 s sampling skips the camera move entirely, 0.25 s lands several frames inside it, and the brightness curve exposes the flash and blackout timing."></a></div><figcaption>Sampling every 2 s skips a camera move entirely. Re-sampling at 0.25 s brought motion and pacing into view.</figcaption></figure>
 
 ### What the tests couldn't see
 
