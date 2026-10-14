@@ -35,6 +35,8 @@ tags: [build-in-public, engineering, testing, observability, indie-dev]
 
 **첫 번째.** 푸시 서버를 배포하고 인증 통로를 점검했더니 "인증 정보를 찾을 수 없다"는 응답이 왔다. 에이전트는 이걸 통과로 보고했다. 내가 "그게 통과가 맞냐"고 되물었다. 서버가 인증서를 검사한 끝에 준 답인지, 인증서를 아예 안 보고 준 답인지 그 응답만으로는 구분이 안 되기 때문이다. 같은 요청을 **인증서 있이 한 번, 없이 한 번** 보내는 대조 검사를 만들어 돌리니 인증서 없는 쪽만 아예 거절됐고, 그제야 통과가 입증됐다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/false-pass-signals/control-test.ko.svg"><img src="/assets/img/posts/false-pass-signals/control-test.ko.svg" width="720" height="270" loading="lazy" alt="같은 요청을 인증서와 함께 보내면 앱 단계까지 들어가 인증 정보 없음 응답을 받고, 인증서 없이 보내면 연결 단계에서 아예 거절된다. 결과가 갈렸으므로 서버가 인증서를 실제로 검사한다는 것이 입증된다."></a></div><figcaption>응답 하나로는 구분이 안 되던 두 경우를, 대조군 하나가 갈라 놓았다.</figcaption></figure>
+
 **두 번째.** 실행 환경의 외부 호출 한도를 재는데 기대치의 4배를 넘겨도 전부 통과했다. "한도가 크다"고 적고 싶었지만 **무효로 기록했다.** 내가 세는 대상이 실제로 제한받는 대상과 다를 수 있는데 비교 대조군이 없어서, "한도가 크다"와 "이 종류는 애초에 안 세진다"를 구분할 수 없었기 때문이다.
 
 나중에 측정 방식을 갈아엎어 다시 쟀다. 서버가 자기 페이지를 반복 호출하게 만들고, 같은 실행에서 DB 조회를 51번 더 섞었다. 실패 지점이 1도 안 밀렸다. 그걸로 DB 조회는 애초에 안 세진다는 게 확정됐다. **대조군 하나가 추측 몇 개를 지웠다.**
@@ -126,6 +128,8 @@ D1 카운터가 날짜가 바뀌어도 초기화되지 않는 버그가 있었�
 
 그래서 물어야 할 질문은 "통과했나"가 아니다. **"이 신호가 실패했다면 어떻게 달라 보였을까"** 다. 답이 "똑같아 보였을 것"이면 그건 통과가 아니라 아무것도 아니다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/false-pass-signals/signal-blind-spots.ko.svg"><img src="/assets/img/posts/false-pass-signals/signal-blind-spots.ko.svg" width="720" height="268" loading="lazy" alt="네 가지 통과 신호가 본 것과 안 본 것. HTTP 200은 연결을 봤고 발송은 안 봤다. 처리 건수 2는 두 채널을 봤고 사람 수는 안 봤다. 테스트 214개 통과는 코드를 봤고 자정 넘김은 안 봤다. 조회된 로그는 기록을 봤고 보존 여부는 안 봤다."></a></div><figcaption>통과 신호마다 실제로 본 것과 보지 못한 것이 있다.</figcaption></figure>
+
 앱은 접었다. 이 목록은 안 접었다.
 
 ---
@@ -157,6 +161,8 @@ Had I coded "1 means success," every healthy send would have been logged as a fa
 Twice.
 
 **First.** I deployed the push server and probed the auth path. The response said "credentials not found." The agent reported that as a pass. I pushed back — that response alone can't distinguish a server that inspected my certificate from one that never looked at it. So we built a paired check, the same request **once with the client certificate, once without.** Only the certificate-less call was rejected outright. That's when the pass was actually established.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/false-pass-signals/control-test.en.svg"><img src="/assets/img/posts/false-pass-signals/control-test.en.svg" width="720" height="270" loading="lazy" alt="The same request with the certificate reaches the app layer and gets “credentials not found”; without the certificate it is rejected outright at the connection. Because the results split, the server demonstrably checks the certificate."></a></div><figcaption>One control separated two cases a single response could not.</figcaption></figure>
 
 **Second.** Measuring the runtime's outbound-call limit, I blew past 4× the expected ceiling with everything still succeeding. I wanted to write down "the limit is generous." I **recorded the measurement as void instead.** What I was counting might not be what's actually rate-limited, and with no control group I couldn't distinguish "the limit is high" from "this kind of call isn't counted at all."
 
@@ -248,5 +254,7 @@ All ten have the same shape. A signal reports pass, and nobody checked **what th
 - The retrieved log observed a record, not whether it was retained
 
 So the question isn't "did it pass." It's **"if this had failed, what would look different?"** If the answer is "nothing," you don't have a pass. You have nothing.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/false-pass-signals/signal-blind-spots.en.svg"><img src="/assets/img/posts/false-pass-signals/signal-blind-spots.en.svg" width="720" height="268" loading="lazy" alt="What four passing signals looked at and missed: HTTP 200 saw the connection, not the delivery; a count of 2 saw two channels, not head count; 214 green tests saw the code, not crossing midnight; a retrieved log saw the record, not whether it was retained."></a></div><figcaption>Every passing signal looked at something, and missed something.</figcaption></figure>
 
 The app is shut down. The list isn't.

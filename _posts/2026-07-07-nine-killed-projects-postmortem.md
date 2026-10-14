@@ -90,6 +90,8 @@ FitQuest는 10,150줄에 파일 78개짜리 운동 RPG였다. 완성됐고, 동�
 
 0단계(문제 검증)를 통과하지 못하면, 나는 이제 코드 작성을 거부한다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/nine-killed-projects-postmortem/seven-questions.ko.svg"><img src="/assets/img/posts/nine-killed-projects-postmortem/seven-questions.ko.svg" width="720" height="380" loading="lazy" alt="코드 전에 묻는 7개 질문과, 각 질문에서 시작하지 않게 되는 답. 지난주에 실제로 불편했는가(아니오면 중단), 메모장·엑셀·기존 앱으로 대체 가능한가(예면 중단), 매일 여는 트리거, 진짜 동기, 매일 바뀌는 변수, 핵심 재료의 실존, 열린 유통 채널(각각 아니오면 중단)."></a></div><figcaption>일곱 개 중 하나라도 걸리면 코드를 쓰지 않는다. 아홉 개 무덤이 남긴 관문이다.</figcaption></figure>
+
 ## 실패가 남긴 것
 
 9개를 다 죽였지만, 무덤이 빈손은 아니었다.
@@ -184,6 +186,8 @@ What the graveyard left me is a list of questions to pass before writing code:
 - **"Is the distribution channel actually open?"** — If it's locked, even 100% done can't ship.
 
 If it fails step 0 (problem validation), I now refuse to write the code.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/nine-killed-projects-postmortem/seven-questions.en.svg"><img src="/assets/img/posts/nine-killed-projects-postmortem/seven-questions.en.svg" width="720" height="380" loading="lazy" alt="Seven questions asked before any code, and the answer that stops the project: did it bother me last week (no stops it), could existing tools do it (yes stops it), a daily trigger, a real motivation, something that changes daily, inputs that exist, an open channel (no stops each)."></a></div><figcaption>Fail any one of the seven and no code gets written. The gate the nine graves left behind.</figcaption></figure>
 
 ### The dividend of failure
 

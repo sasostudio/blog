@@ -19,6 +19,8 @@ tags: [performance, canvas, mobile, build-in-public]
 
 > 2D 캔버스는 **생성·리사이즈 직후엔 비가속**이다. DOM에 붙은 채 계속 그려지며 프레임을 넘겨야 GPU 가속으로 승격된다. **전면 웹뷰(광고)를 본 뒤에는 이 승격이 일어나지 않는다.** 이미 승격된 캔버스는 광고를 겪어도 유지된다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/canvas-gpu-acceleration-loss/canvas-states.ko.svg"><img src="/assets/img/posts/canvas-gpu-acceleration-loss/canvas-states.ko.svg" width="720" height="300" loading="lazy" alt="생성·리사이즈 직후 캔버스는 비가속(픽셀당 비용 3~4배)이다. DOM에 붙은 채 계속 그리면 GPU 가속으로 승격되고, 승격된 캔버스는 광고를 겪어도 유지된다. 전면 광고를 본 뒤에는 승격이 일어나지 않는다. canvas.width를 대입하면(같은 값이어도) 재할당되고, 그리지 않고 방치하면 회수되어 비가속으로 돌아간다."></a></div><figcaption>광고는 원인이 아니었다. 광고 뒤에 새로 만들어지거나 재할당된 캔버스가 승격되지 못한 것이다.</figcaption></figure>
+
 비가속이 되면 픽셀당 비용이 3~4배가 된다. 게임 로직이 느려지는 게 아니라 fill-rate 병목이라 화면 전체가 균일하게 느려진다.
 
 ## 2. 실측치
@@ -83,6 +85,8 @@ v3은 검증 번들까지 만들었다가 철회했다. 유저에게 나가지�
 - **비가속 눈금 자가 생성** — 매 실행 `willReadFrequently: true` 캔버스를 만들어 "이 기기에서 비가속이면 얼마"를 재고, 모든 판정을 그 대비로 낸다. 기기·해상도가 달라도 절대값 선입견에 기대지 않는다.
 - **부하 자동 보정** — 데스크톱은 폰보다 100배 빠르다. 고정 부하로는 양쪽에서 못 쓴다. 눈금 캔버스로 프레임이 목표치를 넘을 때까지 부하를 2배씩 올린다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/canvas-gpu-acceleration-loss/slope-measure.ko.svg"><img src="/assets/img/posts/canvas-gpu-acceleration-loss/slope-measure.ko.svg" width="720" height="280" loading="lazy" alt="그리기 횟수를 N과 4N으로 바꿔 시간 차를 보면 고정비용이 상쇄된다. 비가속은 기울기가 가파르고 GPU 가속은 완만하다. 검증값은 GPU 0.01~0.02, 비가속 0.11~0.13 ns/px."></a></div><figcaption>절대값이 아니라 기울기를 잰다. 측정 자체의 비용이 빠진다.</figcaption></figure>
+
 ## 6. 계측을 프로덕션에 넣는 방법
 
 이 버그는 실기기에서만 재현된다. 즉 **프로덕션 번들에서 수치를 읽을 수 있어야** 조사가 가능하다.
@@ -119,6 +123,8 @@ The ad wasn't the cause. Canvas backing-store reallocation was.
 ### The model
 
 > A 2D canvas is **unaccelerated right after creation or resize.** It gets promoted to GPU compositing only after staying attached to the DOM and being drawn across frames. **After a fullscreen WebView (an ad), that promotion no longer happens.** A canvas already promoted survives the ad.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/canvas-gpu-acceleration-loss/canvas-states.en.svg"><img src="/assets/img/posts/canvas-gpu-acceleration-loss/canvas-states.en.svg" width="720" height="300" loading="lazy" alt="A canvas is unaccelerated right after creation or resize (3–4× cost per pixel). Attached to the DOM and drawn, it is promoted to GPU and survives ads; after a full-screen ad, promotion never happens. Assigning canvas.width (even unchanged) reallocates it, and an idle canvas is reclaimed back to unaccelerated."></a></div><figcaption>The ad wasn’t the cause. Canvases created or reallocated after it never got promoted.</figcaption></figure>
 
 Unaccelerated costs 3–4× per pixel. Nothing in the game loop slows down; it's a fill-rate bottleneck, so the entire screen degrades uniformly.
 
@@ -183,6 +189,8 @@ Two supporting pieces:
 
 - **Self-generated unaccelerated reference.** Every run creates a `willReadFrequently: true` canvas to answer "what does unaccelerated cost *on this device*," and every verdict is expressed relative to that. No absolute thresholds baked in.
 - **Auto-calibrated load.** A desktop is ~100× faster than a phone, so a fixed workload is useless on one end or the other. The reference canvas doubles the load until frame time clears a target.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/canvas-gpu-acceleration-loss/slope-measure.en.svg"><img src="/assets/img/posts/canvas-gpu-acceleration-loss/slope-measure.en.svg" width="720" height="280" loading="lazy" alt="Timing N draws and 4N draws and taking the difference cancels fixed overhead. The unaccelerated line is steep, the GPU line shallow. Verified: GPU 0.01–0.02, unaccelerated 0.11–0.13 ns/px."></a></div><figcaption>Measure the slope, not the absolute value, and the cost of measuring drops out.</figcaption></figure>
 
 ### Instrumentation that survives a production build
 

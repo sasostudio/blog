@@ -11,11 +11,15 @@ tags: [webgl, animation, mobile, build-in-public]
 
 앱인토스 8월 챌린지에 미니앱을 하나 냈다. 밤에 안 자는 사람이 열면 지금 같이 깨어 있는 사람 수와 그 이유 순위를 보여주는 앱이고, 화면 한가운데 베개 캐릭터가 서 있다. 캐릭터가 주인공이라 "이걸 어떻게 움직이나"가 첫 관문이었다.
 
+<figure class="shot"><img src="/assets/img/posts/mesh-deformation-from-scratch/night-pod-home.jpg" width="440" height="725" loading="lazy" alt="밤샘팟 홈 화면 — 잠옷을 입고 안대를 쓴 베개 캐릭터가 방 한가운데 서 있고, 아래에 오늘 밤샘 인원과 이유 쪽지들이 있다"><figcaption>밤샘팟 홈 화면. 이 베개 캐릭터를 코드로 움직이는 게 첫 관문이었다.</figcaption></figure>
+
 ## 리깅 도구를 버렸다
 
 처음엔 업계에서 쓰는 2D 리깅 도구를 채택했다. 웹 연동 사전조사까지 마치고 나서야 문제가 드러났다. 그 도구는 사람이 마우스로 정점을 찍고 변형을 잡는 물건이다. 계획서에는 "도구로 리깅한다"고 적혀 있었는데, 그 일을 할 사람이 비어 있었다.
 
 그래서 원리만 직접 구현했다. 그림을 격자로 나누고 정점 위치마다 다른 각도를 주면 관절이 꺾이지 않고 활처럼 휜다. 변형 수학을 화면에서 떼어내 순수 함수로 만들고 검사부터 붙였더니 그 자리에서 결함이 하나 나왔다. 휘는 기준선을 조각 가장자리에 뒀더니 길이가 12% 줄어들었다. 기준선을 중앙으로 옮기니 보존됐다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/mesh-deformation-from-scratch/bend-baseline.ko.svg"><img src="/assets/img/posts/mesh-deformation-from-scratch/bend-baseline.ko.svg" width="720" height="300" loading="lazy" alt="같은 띠를 휘었을 때, 기준선을 조각 가장자리에 두면 길이가 12% 줄고 가운데에 두면 길이가 보존된다."></a></div><figcaption>휘는 기준선 위치 하나가 길이 12%를 갉아먹고 있었다.</figcaption></figure>
 
 성능은 덤이었다. 안 쓰는 기능이 없으니 원래 도구보다 30~50배 빨랐다.
 
@@ -24,6 +28,8 @@ tags: [webgl, animation, mobile, build-in-public]
 캐릭터는 사용자가 고른 이유대로 행동한다. 당시 이유가 7종이고(나중에 8종이 됐다) 표정이 5종이니, 조합을 그림으로 만들면 35벌이다. 그렇게 갈 뻔했다.
 
 축을 나눠서 막았다. 포즈와 소품은 이유가 정하고, 표정은 시각이 정한다. 두 축이 독립이면 자산은 7 + 5로 끝난다. 이미지 생성에 하루 횟수 제한이 걸려 있어서 이 판단이 그대로 일정이 됐다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/mesh-deformation-from-scratch/asset-axes.ko.svg"><img src="/assets/img/posts/mesh-deformation-from-scratch/asset-axes.ko.svg" width="720" height="250" loading="lazy" alt="이유 7종과 표정 5종을 조합마다 그리면 35벌이지만, 이유가 포즈·소품을, 시각이 표정을 정하도록 축을 나누면 7 + 5 = 12벌이다."></a></div><figcaption>두 축이 독립이면 자산은 곱이 아니라 합이 된다.</figcaption></figure>
 
 덤으로 표현 하나가 딸려 왔다. 동작이 한 바퀴 도는 동안 앞쪽은 이유 표정, 뒤쪽은 시각 표정이 나오고 그 비율이 곧 그 시간대의 활기다. 초저녁엔 내내 이유 표정이지만 새벽 세 시엔 대부분 감긴 눈이 이긴다. 공부하다 자꾸 눈이 감기는 상태가 숫자 하나로 표현된다.
 
@@ -70,11 +76,15 @@ tags: [webgl, animation, mobile, build-in-public]
 
 I shipped a mini-app for an August build challenge on the Toss platform. You open it at 2 a.m., it tells you how many other people are awake right now and why, and a pillow character stands in the middle of the screen. The character is the whole app, so the first question was how to animate it.
 
+<figure class="shot"><img src="/assets/img/posts/mesh-deformation-from-scratch/night-pod-home.jpg" width="440" height="725" loading="lazy" alt="Night Pod home screen — a pillow character in pajamas and a sleep mask stands mid-room, with tonight’s count and reason notes below"><figcaption>Night Pod’s home screen. Making this pillow character move in code was the first hurdle.</figcaption></figure>
+
 ### Dropping the rigging tool
 
 I'd picked a standard 2D rigging tool and finished the research on wiring it into the web before the real problem surfaced: a human sits down with a mouse and places the deformation by hand. The plan said "rig it with the tool." It never said who.
 
 So I implemented the underlying idea instead. Split the sprite into a grid, apply a different angle per vertex, and the joint bends like a bow rather than creasing. I pulled the deformation math out of the render path into pure functions and wrote the tests first — which immediately surfaced a defect. With the bend axis on the edge of the piece, the arm lost 12% of its length. Moving the axis to the center preserved it.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/mesh-deformation-from-scratch/bend-baseline.en.svg"><img src="/assets/img/posts/mesh-deformation-from-scratch/bend-baseline.en.svg" width="720" height="300" loading="lazy" alt="Bending the same strip: with the baseline on the piece’s edge the length shrinks by 12%; with it in the middle the length is kept."></a></div><figcaption>Where the bend baseline sat was quietly eating 12% of the length.</figcaption></figure>
 
 The performance was a bonus: 30–50x faster than the tool, because none of the features I wasn't using were there.
 
@@ -83,6 +93,8 @@ The performance was a bonus: 30–50x faster than the tool, because none of the 
 The character acts out whichever reason you picked. Seven reasons at the time — eight in the shipped version — and five expressions. Drawn as combinations, that's 35 sprite sets.
 
 Splitting the axes killed it. Pose and props come from the reason; expression comes from the clock. Independent axes mean 7 + 5 assets instead of 7 × 5. Image generation had a daily quota, so this decision *was* the schedule.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/mesh-deformation-from-scratch/asset-axes.en.svg"><img src="/assets/img/posts/mesh-deformation-from-scratch/asset-axes.en.svg" width="720" height="250" loading="lazy" alt="Drawing every combination of 7 reasons and 5 expressions takes 35 sets; letting the reason set pose and prop and the time set the expression takes 7 + 5 = 12."></a></div><figcaption>Independent axes turn a product into a sum.</figcaption></figure>
 
 It bought an expression I hadn't planned for. Across one animation cycle the first half shows the reason's expression and the second half shows the hour's, and the ratio between them is how awake that hour is. At 8 p.m. it's all reason. At 3 a.m. the closing eyes win most of the cycle. "Studying, but my eyes keep shutting" turns out to be a single number.
 

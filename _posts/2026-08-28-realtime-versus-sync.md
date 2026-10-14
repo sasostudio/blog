@@ -41,6 +41,8 @@ opponent.ts        인터페이스(공격 이벤트 · 스냅샷 · fx)
 
 한 가지 규칙이 이 구조를 지탱한다. **`versus/net/`은 격리 계층이고, 여기서 게임 로직을 참조하기 시작하면 교체점이 무너진다.**
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/realtime-versus-sync/structure.ko.svg"><img src="/assets/img/posts/realtime-versus-sync/structure.ko.svg" width="720" height="320" loading="lazy" alt="matchController 상태머신은 상대의 정체를 모르고 Opponent 계약(공격 이벤트·스냅샷·fx)만 안다. 그 아래 botOpponent는 두 번째 물리 보드를 실제로 돌리고, remoteOpponent는 물리 없이 수신 스냅샷만 재렌더한다. 엔진은 한 벌이고 combatant.ts가 대전용 오버라이드만 얹는다. versus/net/은 격리 계층이다."></a></div><figcaption>봇에서 원격으로의 전환은 주입되는 구현체 하나를 바꾸는 일이다.</figcaption></figure>
+
 ## 3. 공격 모델은 순수함수로 떼어낸다
 
 | 파일 | 줄 수 | 역할 |
@@ -70,6 +72,8 @@ npx tsx src/versus/net/matchResult.selfcheck.ts
 **양자화가 정지 판정을 대신한다.** 오브젝트가 멈췄는지 따로 계산하지 않는다. 양자화한 값이 직전과 같으면 그 오브젝트는 델타에서 자동으로 빠진다. 합체 퍼즐은 대부분의 오브젝트가 대부분의 시간 동안 쌓여 있으므로, 이것만으로 전송량이 크게 줄어든다.
 
 **송신은 엔진을 수정하지 않고 붙였다.** `localSnapshotSource`는 엔진이 이미 노출하고 있는 오브젝트 위치만 읽는 "읽기 탭"이다. 엔진 쪽에 송신용 훅을 뚫지 않았기 때문에 통신 기능이 추가돼도 싱글 플레이 경로의 동작은 변하지 않는다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/realtime-versus-sync/snapshot-flow.ko.svg"><img src="/assets/img/posts/realtime-versus-sync/snapshot-flow.ko.svg" width="720" height="200" loading="lazy" alt="내 보드의 위치값을 읽기만 하는 탭 → 양자화·델타(멈춘 오브젝트는 자동으로 빠짐) → 15Hz 송신 → RTDB 중계 → 상대 화면에서 봇전과 같은 그리기 함수로 재렌더."></a></div><figcaption>엔진에 송신용 훅을 뚫지 않았으므로 싱글 플레이 경로는 변하지 않는다.</figcaption></figure>
 
 ## 5. 원격 보드를 봇전과 똑같이 그리기
 
@@ -142,6 +146,8 @@ That's what made staged shipping possible. Phase one shipped bots only and locke
 
 One rule holds the structure up: **`versus/net/` is an isolation layer, and the moment it starts referencing game logic, the swap point collapses.**
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/realtime-versus-sync/structure.en.svg"><img src="/assets/img/posts/realtime-versus-sync/structure.en.svg" width="720" height="320" loading="lazy" alt="The matchController state machine knows nothing about the opponent beyond the Opponent contract (attack events, snapshots, fx). Under it, botOpponent runs a second physics board and remoteOpponent runs no physics, only re-rendering snapshots. There is one engine; combatant.ts adds versus overrides. versus/net/ is an isolation layer."></a></div><figcaption>Switching from bot to remote is swapping one injected implementation.</figcaption></figure>
+
 ### Attack model as pure functions
 
 | File | Lines | Role |
@@ -171,6 +177,8 @@ Two decisions determine bandwidth.
 **Quantization substitutes for rest detection.** Nothing computes whether an object has come to rest. If the quantized value matches the previous one, that object drops out of the delta automatically. In a merge puzzle most objects are stacked and still most of the time, so this alone cuts the payload substantially.
 
 **The send path was attached without modifying the engine.** `localSnapshotSource` is a read tap over object positions the engine already exposes. No send hook was cut into the engine, so the single-player path behaves identically whether networking is present or not.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/realtime-versus-sync/snapshot-flow.en.svg"><img src="/assets/img/posts/realtime-versus-sync/snapshot-flow.en.svg" width="720" height="200" loading="lazy" alt="A read-only tap on my board’s positions → quantize and delta (objects at rest drop out) → send at 15 Hz → RTDB relay → re-render on the opponent’s screen with the same draw code as bot matches."></a></div><figcaption>No send hook was cut into the engine, so the single-player path is unchanged.</figcaption></figure>
 
 ### Rendering the remote board exactly like a bot match
 

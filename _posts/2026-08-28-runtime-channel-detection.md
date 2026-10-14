@@ -33,6 +33,8 @@ isNativePlatform()                         → 'capacitor'  (안드로이드 앱
 
 게임 로직은 세 채널이 완전히 동일하다. 차이는 **인증·수익화·진입 게이트 세 층에만** 있다. 그래서 분기를 그 세 층에 가두고 나머지를 공유하는 쪽이 싸다. 대신 분기점마다 "왜 이 채널만"을 주석으로 남기는 규율이 필수다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/runtime-channel-detection/channel-layers.ko.svg"><img src="/assets/img/posts/runtime-channel-detection/channel-layers.ko.svg" width="720" height="300" loading="lazy" alt="런타임 판정 한 곳: __appsInToss 또는 AIT 전역이면 ait, isNativePlatform()이면 capacitor, 그 외는 web. !!window.Capacitor는 브라우저에서도 전역이 있어 항상 참이라 쓰면 안 된다. 채널별로 갈리는 건 인증, 수익화, 진입 세 층뿐이고 게임 로직은 세 채널이 동일하다."></a></div><figcaption>분기를 세 층에 가두고 나머지는 공유한다.</figcaption></figure>
+
 ## 3. `!!window.Capacitor`로 판정하면 안 된다
 
 `@capacitor/core`는 **브라우저에서도 전역을 정의한다.** 존재 여부만 보는 판정은 항상 참이 되고, 웹이 전부 네이티브 앱으로 오판된다.
@@ -71,6 +73,8 @@ isNativePlatform()                         → 'capacitor'  (안드로이드 앱
 1번과 4번은 둘 다 "도메인을 등록한다"인데 등록하는 곳이 다르다. 1번은 인증 서비스 콘솔이고 4번은 API 키 자체의 제한 설정이다. 1번을 하고 "도메인은 처리했다"고 넘긴 것이 조사를 길게 만들었다.
 
 4번이 근본 원인이었고, 증상이 비대칭이라 더 어려웠다. **Firebase browser key의 리퍼러 제한은 Auth와 App Check에는 강제되고 Firestore·RTDB에는 강제되지 않는다.** 그래서 "DB는 멀쩡히 읽고 쓰는데 로그인만 403"이라는 그림이 나온다. 인증 코드를 아무리 봐도 안 나오는 종류의 결함이다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/runtime-channel-detection/auth-layers.ko.svg"><img src="/assets/img/posts/runtime-channel-detection/auth-layers.ko.svg" width="720" height="280" loading="lazy" alt="1 인증 서비스 콘솔에 도메인 추가: 변화 없음. 2 검증 옵션 조정: 401 소멸, 다음 에러. 3 서명 IAM 권한: 500 소멸, 다음 에러. 4 API 키 리퍼러 허용 목록에 도메인 추가: 해결. 같은 브라우저 키라도 리퍼러 제한은 Auth와 App Check엔 강제되고 Firestore와 RTDB엔 강제되지 않는다."></a></div><figcaption>1번과 4번은 둘 다 “도메인 등록”이지만 등록하는 곳이 달랐다.</figcaption></figure>
 
 이 트랙 전체는 App Check 토큰 발급이 계속 실패하던 상태에서 시작했다. 원인이 3건이었다.
 
@@ -126,6 +130,8 @@ otherwise                                → 'web'
 
 Game logic is identical across all three. The differences live in exactly three layers — auth, monetization, entry gating — so confining branches to those layers and sharing everything else is the cheaper structure. The cost is a discipline: every branch point carries a comment explaining why this channel only.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/runtime-channel-detection/channel-layers.en.svg"><img src="/assets/img/posts/runtime-channel-detection/channel-layers.en.svg" width="720" height="300" loading="lazy" alt="One runtime check: __appsInToss or an AIT global means ait, isNativePlatform() means capacitor, otherwise web. !!window.Capacitor must not be used — the global exists in browsers too. Only three layers differ per channel — auth, monetization, entry — and game logic is identical."></a></div><figcaption>Branches are confined to three layers; everything else is shared.</figcaption></figure>
+
 ### Don't detect with `!!window.Capacitor`
 
 `@capacitor/core` **defines its global in browsers too.** A presence check is therefore always true, and web gets classified as native every time.
@@ -164,6 +170,8 @@ When proper authentication went onto the mini-app channel, entry failed on real 
 Steps 1 and 4 are both "register the domain," but in different places — one is the auth service console, the other is the restriction config on the API key itself. Doing step 1 and mentally checking off "domain handled" is what stretched the investigation.
 
 Step 4 was the root cause, and the asymmetry made it harder. **A Firebase browser key's referrer restriction is enforced for Auth and App Check but not for Firestore or RTDB.** The resulting picture is "the database reads and writes fine, only sign-in returns 403" — a defect no amount of staring at auth code will surface.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/runtime-channel-detection/auth-layers.en.svg"><img src="/assets/img/posts/runtime-channel-detection/auth-layers.en.svg" width="720" height="280" loading="lazy" alt="1 add domain in the auth console: no change. 2 adjust verification options: 401 gone, next error. 3 grant signing IAM: 500 gone, next error. 4 add domain to the API key referrer list: fixed. With the same browser key, referrer limits apply to Auth and App Check but not to Firestore and RTDB."></a></div><figcaption>Steps 1 and 4 are both “register the domain” — in different places.</figcaption></figure>
 
 The whole track started from App Check token issuance failing continuously. There were three causes:
 

@@ -38,6 +38,8 @@ tags: [claude-code, agents, build-in-public, devlog]
 
 감사자는 **읽기 전용**이다. 도구 권한에 Write/Edit가 없다. 이건 [지난 글에서 만든 AgentRoom](/2026/07/05/agentroom-human-gated-orchestration/)의 QA 에이전트와 똑같은 원칙이다. 검수자가 조용히 고쳐놓을 수 있으면 그건 검수가 아니다. 감사자는 문제를 찾아 보고만 하고, 수정은 본체가 한 뒤 **재감사**를 받는다. 통과 전엔 게시 안 된다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/devlog-leak-audit-gate/pipeline.ko.svg"><img src="/assets/img/posts/devlog-leak-audit-gate/pipeline.ko.svg" width="720" height="300" loading="lazy" alt="작업로그 버퍼에서 글감 메뉴 표를 만들고, 관리자가 고른 것만 조립한다. 초안은 유출이 있다고 가정하는 읽기 전용 독립 감사로 가고, 플래그가 나오면 본체가 고친 뒤 재감사한다. 감사 결과를 관리자에게 함께 보여주고, 관리자가 올리라고 할 때만 게시한다."></a></div><figcaption>에이전트는 넉넉하게 뽑기만 하고, 고르는 것과 게시 결정은 사람이 한다. 그 사이에 유출을 기본값으로 놓는 감사가 있다.</figcaption></figure>
+
 검사는 4계층으로 나뉜다:
 
 1. **🔴 자격증명** — API 키, 토큰, 서비스 계정 키, `.env` 값, Firebase/Supabase 설정
@@ -88,6 +90,8 @@ So instead of a permanent ledger, I keep a **queue that gets emptied.** Whenever
 Once assembly is done, the final draft goes to an **independent audit agent.** Its prompt isn't "check whether there's a leak." It's **"assume a leak exists, and try to refute that there isn't one."** The default is guilty; innocence has to be proven.
 
 The auditor is **read-only.** Its tool permissions don't include Write or Edit. This is the exact same principle as the QA agent in [AgentRoom, from the last post](/2026/07/05/agentroom-human-gated-orchestration/) — if a reviewer can quietly fix things, it isn't a review. The auditor only finds and reports; the main process fixes, then submits for a **re-audit.** Nothing publishes until it passes.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/devlog-leak-audit-gate/pipeline.en.svg"><img src="/assets/img/posts/devlog-leak-audit-gate/pipeline.en.svg" width="720" height="300" loading="lazy" alt="Items from the worklog buffer become a menu table; only the ones I pick get assembled. The draft goes to a read-only independent audit that assumes a leak exists; flags go back for fixes and a re-audit. The audit result is shown to me too, and it ships only when I say so."></a></div><figcaption>The agent only over-drafts; picking and publishing stay with a human, with a leak-by-default audit in between.</figcaption></figure>
 
 The check runs in four layers:
 

@@ -23,6 +23,8 @@ tags: [release, process, mobile, build-in-public]
 
 그리고 초안을 그대로 밀지 않고 승인을 한 번 받는다. 되돌릴 수 없는 제출 앞에서는 한 번 멈추는 쪽이 싸다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/what-you-cant-undo/irreversible-gate.ko.svg"><img src="/assets/img/posts/what-you-cant-undo/irreversible-gate.ko.svg" width="720" height="250" loading="lazy" alt="미리보기, 기계 검사, 승인 한 번 중 하나는 반드시 거쳐서 되돌릴 수 없는 동작으로 간다. 예: 검수 제출(취소한 번들은 재요청 불가), SDK 올리기(출시하면 되돌릴 수 없음), 순차 관문."></a></div><figcaption>되돌릴 수 없는 문 앞에서는 한 번 멈추는 쪽이 싸다.</figcaption></figure>
+
 ## 승인난 번들을 버린 판단
 
 출시 전날, 검수 승인이 난 번들을 손에 쥔 상태에서 그걸 버리고 다시 받았다.
@@ -55,6 +57,8 @@ tags: [release, process, mobile, build-in-public]
 표정 자산의 해상도를 개선하는 작업을 하다가 관리자 판정으로 전부 롤백했다. 고친 결과를 폰에서 실제로 보이는 크기로 놓고 보니 차이가 거의 안 보였기 때문이다.
 
 롤백이 쉬웠던 건 운이 아니었다. 착수할 때 원본 자산을 덮어쓰지 않고 새 이름으로 굽기로 정해뒀다. 그래서 되돌리기가 생성물 복원과 새 파일 격리로 끝났다. 복원 뒤 도구를 다시 돌려 자동 생성 파일이 백업과 바이트 단위로 같은지까지 확인했다. 덮어쓰기를 택했다면 같은 판정이 훨씬 비쌌을 것이다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/what-you-cant-undo/rollback-cost.ko.svg"><img src="/assets/img/posts/what-you-cant-undo/rollback-cost.ko.svg" width="720" height="186" loading="lazy" alt="원본 자산을 덮어쓰면 되돌리려면 원본을 다시 만들어야 한다. 새 이름으로 구우면 생성물 복원과 새 파일 격리로 끝나고, 자동 생성 파일이 백업과 바이트 단위로 같은지 확인할 수 있다."></a></div><figcaption>되돌리기 비용은 착수할 때 정해진다.</figcaption></figure>
 
 배운 건 그 다음이다. 이 개선을 제기한 건 관리자가 아니라 나였는데, 인계 문서에는 "관리자 지시"라고 적어뒀다. 그런 지시는 없었고, 같은 문서 아래쪽에는 처음부터 "출시가 급한 지금은 그대로 가도 된다"가 적혀 있었다. 한 문서 안에서 두 서술이 충돌했고 나는 위쪽만 보고 착수했다.
 
@@ -96,6 +100,8 @@ Release notes now get a machine pass before submission. There's no spellchecker 
 
 And the draft doesn't go straight through; it gets one approval. In front of a door that only opens one way, stopping once is cheap.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/what-you-cant-undo/irreversible-gate.en.svg"><img src="/assets/img/posts/what-you-cant-undo/irreversible-gate.en.svg" width="720" height="250" loading="lazy" alt="At least one of a dry run, a machine check, or one approval sits in front of every irreversible action — a review submit (a cancelled bundle can’t be resubmitted), an SDK upgrade (no rolling back once shipped), sequential gates."></a></div><figcaption>In front of a door that only opens one way, stopping once is cheap.</figcaption></figure>
+
 ### Throwing away an approved bundle
 
 The night before launch, holding a bundle that had already passed review, I threw it out and rebuilt.
@@ -128,6 +134,8 @@ One more thing was invisible from the announcement alone. The app detects "am I 
 A round of work improving the resolution of the facial expression sprites was rolled back in full. Viewed at the size they actually occupy on a phone, the difference was barely visible.
 
 The rollback being easy wasn't luck. At the start I'd decided not to overwrite source assets and to bake to new filenames instead. So undoing meant restoring generated files and quarantining thirteen new ones. After restoring, I re-ran the tool and confirmed the regenerated files were byte-identical to the backup. Had I chosen overwrite, the same call would have cost far more.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/what-you-cant-undo/rollback-cost.en.svg"><img src="/assets/img/posts/what-you-cant-undo/rollback-cost.en.svg" width="720" height="186" loading="lazy" alt="Overwriting the original means rebuilding it to undo. Baking to a new name makes undo a matter of restoring outputs and quarantining new files, with regenerated files verified byte-for-byte against the backup."></a></div><figcaption>The cost of undo is decided when you start.</figcaption></figure>
 
 The real lesson came after. *I* raised that improvement, not the person reviewing — but the handoff doc recorded it as an instruction from them. There was no such instruction, and further down the same document sat the original line: "with launch this close, leaving it as-is is fine." Two statements in one document contradicted each other, and I acted on the one nearer the top.
 

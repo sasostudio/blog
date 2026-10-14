@@ -17,6 +17,8 @@ tags: [build-in-public, postmortem, product, apps-in-toss, public-api]
 
 물 마시기 앱은 흔하다. 흔하지 않게 만들려고 목표량을 날씨에서 뽑았다. 오늘 덥고 습하면 목표가 올라가고, 폭염경보가 뜨면 한 번 더 올라간다.
 
+<figure class="shot"><img src="/assets/img/posts/first-launch-d1-retention-zero/hydro-coach-home.jpg" width="440" height="694" loading="lazy" alt="수분 코치 홈 화면 — 직접 입력 칸, 시간대별 기온 그래프와 폭염 단계, 자외선·습도, 오늘의 물 기록"><figcaption>수분 코치 홈 화면. 시간대별 기온과 폭염 단계가 목표량을 움직인다.</figcaption></figure>
+
 재료는 전부 공공데이터포털의 기상청 오픈API였다. `apis.data.go.kr/1360000` 아래 네 종류를 썼다.
 
 | 서비스 | 오퍼레이션 | 쓴 이유 |
@@ -32,6 +34,8 @@ tags: [build-in-public, postmortem, product, apps-in-toss, public-api]
 
 - **API 키 은닉.** 키는 Worker Secret에만 있고 앱 번들에는 존재하지 않는다.
 - **위치정보 미수집.** 앱은 GPS를 쓰지 않는다. 사용자가 고른 지역의 격자 좌표(nx/ny)와 지점 코드만 보내고, 프록시는 위경도를 아예 인지하지 않는다. 시/도·시군구 256건을 격자·지점 코드로 미리 매핑해 뒀다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/first-launch-d1-retention-zero/architecture.ko.svg"><img src="/assets/img/posts/first-launch-d1-retention-zero/architecture.ko.svg" width="720" height="230" loading="lazy" alt="앱은 GPS를 쓰지 않고 고른 지역의 격자 좌표와 지점 코드만 보낸다. Cloudflare Worker는 API 키를 Secret에만 두고 격자와 발표 시각 슬롯을 키로 1시간 캐시하며 기상청 API 4종을 호출한다."></a></div><figcaption>키는 앱 번들에 없고, 위경도는 어디에도 없다.</figcaption></figure>
 
 캐시는 KV에 1시간, 키를 "격자 좌표 + 발표 시각 슬롯"으로 잡아 전 사용자가 공유하게 했다. 기상청 쿼터를 지키려는 설계였는데 나중에 이게 비용 구조의 첫 병목이 된다. 그 얘기는 [2편](/2026/08/27/false-pass-signals/)에서 다룬다.
 
@@ -63,6 +67,8 @@ tags: [build-in-public, postmortem, product, apps-in-toss, public-api]
 꾸준히 들어오는 사용자가 딱 한 명 있었는데, 정황상 만든 사람 본인이다.
 
 **마케팅 문제가 아니다. 0에 5,000을 곱해도 0이다.**
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/first-launch-d1-retention-zero/funnel.ko.svg"><img src="/assets/img/posts/first-launch-d1-retention-zero/funnel.ko.svg" width="720" height="270" loading="lazy" alt="도달 5,201, 클릭 27(CTR 0.52%), 신규 유입 16, 다음 날 재방문 0. 막대 길이는 비율이 아니라 단계 표시다."></a></div><figcaption>광고는 제 일을 했다. 다음 날 돌아온 사람이 없었다.</figcaption></figure>
 
 ## 왜 헛돌았나
 
@@ -147,6 +153,8 @@ Thirty-one days start to finish, about twenty of them actual work. About 18,585 
 
 Water-tracking apps are a dime a dozen. To make one that wasn't, I derived the daily target from the weather. Hot and humid today, the target goes up. Heat advisory in effect, it goes up again.
 
+<figure class="shot"><img src="/assets/img/posts/first-launch-d1-retention-zero/hydro-coach-home.jpg" width="440" height="694" loading="lazy" alt="Hydro Coach home screen — a manual entry field, an hourly temperature chart with heat levels, UV and humidity, and today’s water log"><figcaption>Hydro Coach’s home screen. Hourly temperature and heat levels move the target.</figcaption></figure>
+
 Every input came from the Korea Meteorological Administration's open API, served through the national open-data portal at `apis.data.go.kr/1360000`. Four endpoints:
 
 | Service | Operation | Why |
@@ -162,6 +170,8 @@ The app never calls the API directly. A Cloudflare Worker proxy sits in between,
 
 - **Key concealment.** The API key lives only in a Worker Secret and never appears in the app bundle.
 - **No location collection.** The app doesn't touch GPS. It sends only the grid coordinates (nx/ny) and station code for a region the user picked from a list, and the proxy never sees latitude or longitude at all. I pre-mapped 256 administrative regions to their grid and station codes.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/first-launch-d1-retention-zero/architecture.en.svg"><img src="/assets/img/posts/first-launch-d1-retention-zero/architecture.en.svg" width="720" height="230" loading="lazy" alt="The app uses no GPS and sends only the chosen region’s grid coordinates and station code. A Cloudflare Worker keeps the API key in Secrets, caches by grid and issue-time slot for an hour, and calls four weather APIs."></a></div><figcaption>The key never ships in the app bundle, and latitude/longitude never exist anywhere.</figcaption></figure>
 
 Responses cache in KV for an hour, keyed by grid coordinates plus the forecast's publication slot, so every user shares the same entry. That was there to respect the KMA's quota. It later turned out to be the first bottleneck in the cost structure — [part two](/2026/08/27/false-pass-signals/) covers that.
 
@@ -193,6 +203,8 @@ Small sample, you might object. I ran the numbers. **Even assuming a true D1 of 
 Exactly one user kept coming back, and circumstantially that user is me.
 
 **This is not a marketing problem. Multiply zero by five thousand and you still have zero.**
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/first-launch-d1-retention-zero/funnel.en.svg"><img src="/assets/img/posts/first-launch-d1-retention-zero/funnel.en.svg" width="720" height="270" loading="lazy" alt="Reach 5,201, clicks 27 (CTR 0.52%), new users 16, back the next day 0. Bar lengths mark stages, not ratios."></a></div><figcaption>The ads did their job. Nobody came back the next day.</figcaption></figure>
 
 ### Three reasons it went nowhere
 

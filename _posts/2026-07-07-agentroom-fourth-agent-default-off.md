@@ -33,6 +33,8 @@ tags: [claude-code, agents, agentroom, build-in-public]
 
 이게 가능한 이유는 researcher가 **독립된 컨텍스트**에서 돌기 때문이다. 조사자가 웹페이지 수십 개를 읽든 말든 그 원문은 총괄의 컨텍스트로 들어오지 않는다. 조사자는 마지막에 **출처 URL이 붙은 구조화된 요약만** 반환한다. 웹 원문 통짜 덤프는 금지다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/agentroom-fourth-agent-default-off/researcher-gate.ko.svg"><img src="/assets/img/posts/agentroom-fourth-agent-default-off/researcher-gate.ko.svg" width="720" height="280" loading="lazy" alt="researcher는 기본이 꺼져 있고 세 조건에서만 합류한다: 관리자의 명시 요청, 외부 정보 없이 불가능한 작업, planner나 dev의 요청이 관리자 게이트를 통과한 경우. 합류하면 독립 컨텍스트에서 제한 없이 조사하고, 총괄에게는 구조화된 요약과 출처 URL만 돌려준다."></a></div><figcaption>투입 조건은 좁게, 조사는 깊게, 반환은 좁게. 웹 원문은 총괄의 컨텍스트로 들어오지 않는다.</figcaption></figure>
+
 이건 qa에서 이미 쓴 수와 똑같다. qa도 독립 컨텍스트에서 실제 파일을 마음껏 읽지만, 총괄에게는 판정(APPROVED/CHANGES_REQUESTED)과 발견 문제 요약만 돌려준다. **격리는 방어만을 위한 게 아니다. 깊이까지 가능하게 하는 장치다.** 무제한 깊이, 그리고 범위를 정한 반환. 오케스트레이터를 오염시키지 않으면서 서브에이전트가 깊이 파게 하는 방법.
 
 ## 조건부로만 켜지는 디자인 검수
@@ -94,6 +96,8 @@ There's a literal line in the operating rules: **"a 'might be nice to have' is n
 Paradoxically, while the *trigger* is locked down hard, once it *is* called I put **no cap on how much it researches internally.** Search and read as much as the question needs — a shallow pass that forces a re-research round-trip is the bigger waste.
 
 This works because the researcher runs in an **isolated context.** Whether it reads dozens of web pages or not, none of that raw text enters the director's context. The researcher returns only a **structured summary with source URLs.** Dumping raw web content is forbidden.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/agentroom-fourth-agent-default-off/researcher-gate.en.svg"><img src="/assets/img/posts/agentroom-fourth-agent-default-off/researcher-gate.en.svg" width="720" height="280" loading="lazy" alt="researcher is off by default and joins only on an explicit request, for work impossible without outside information, or when a planner or dev request clears the human gate. Once in, it digs without limits in an isolated context and returns only a structured summary with source URLs."></a></div><figcaption>Narrow conditions to join, deep digging inside, a narrow return. Raw web text never reaches the director.</figcaption></figure>
 
 This is the exact same move as qa. qa also reads the actual files freely in its own isolated context, but returns only a verdict (APPROVED/CHANGES_REQUESTED) and a summary of findings to the director. **Isolation isn't only defense — it's what enables depth.** Uncapped depth, bounded return. It's how you let a subagent dig deep without polluting the orchestrator.
 

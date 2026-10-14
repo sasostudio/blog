@@ -31,6 +31,8 @@ tags: [mobile, testing, performance, build-in-public]
 
 미리보기를 열어 보니 화면 오른쪽에 작은 자국이 세로로 줄지어 찍혀 있었다. 띠 맨 위 세 줄에 책 더미 아래끝이 걸쳐 들어왔고, 그게 화면 아래로 반복된 것이었다. 기존 검사가 못 잡은 이유가 핵심이다. 그 검사는 열 평균을 보는데, 가로로 좁고 어두운 자국은 48줄 평균에 묻혀 편차가 4.2밖에 안 된다. 평균은 "작은 것이 여러 번 반복된다"를 못 본다. 픽셀 단위 이물 탐지로 바꾸니 같은 띠에서 39개가 잡혔다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/thirteen-bundles-in-one-day/mean-blind-spot.ko.svg"><img src="/assets/img/posts/thirteen-bundles-in-one-day/mean-blind-spot.ko.svg" width="720" height="260" loading="lazy" alt="반복 타일로 쓰는 48줄 띠에 작은 자국이 흩어져 있다. 열 평균 검사는 편차 4.2로 기준 10 아래라 통과시키고, 픽셀 단위 이물 탐지는 39개를 잡아 실패시킨다."></a></div><figcaption>평균은 작은 것이 여러 번 반복되는 걸 못 본다.</figcaption></figure>
+
 같은 계열의 실수가 색에도 있었다. 이유 8종에 색을 줬는데 헷갈린다는 지적을 받았다. 기존 검사는 "색이 서로 다르다"만 봐서 값이 1만 달라도 통과한다. 화면에서는 같은 색인데 테스트가 안심시키고 있었던 것이다. 사람 눈 가중치를 준 거리로 다시 재니 최소 67.6이었고, 색상환에서 50도씩 벌려 재배치해 131.6이 됐다.
 
 수치가 통과했다고 끝난 게 아니라, 통과한 수치가 무엇을 안 보는지를 물어야 했다.
@@ -52,6 +54,8 @@ tags: [mobile, testing, performance, build-in-public]
 틀렸다. 관리자가 화면을 보고 한마디로 뒤집었다. "아니 지금 공간이 남잖아."
 
 진짜 원인은 쪽지 줄의 flex 설정이었다. 남는 높이를 위아래 줄이 균등 분배받게 해뒀더니, 쪽지 두 장짜리 줄이 자기 내용보다 훨씬 큰 높이를 빈 여백으로 차지하고 있었다. 공간이 없던 게 아니라 낭비되고 있었다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/thirteen-bundles-in-one-day/flex-waste.ko.svg"><img src="/assets/img/posts/thirteen-bundles-in-one-day/flex-waste.ko.svg" width="720" height="300" loading="lazy" alt="원래 레이아웃에서는 남는 높이를 균등 분배해 쪽지 두 장짜리 줄이 빈 여백을 차지했다. 내용 크기만 차지하게 바꾸자 여백이 사라지고 책상 앞면이 보였다."></a></div><figcaption>공간이 모자랐던 게 아니라 낭비되고 있었다.</figcaption></figure>
 
 오판의 구조가 뼈아프다. 내 계산은 화면 높이도 요소 높이도 전부 추정값이었는데, 그걸 "물리적으로 불가능"이라는 단정으로 포장했다. 추정 하나가 틀리자 결론이 통째로 뒤집혔다. 화면을 볼 수 없는 쪽이 예산 계산으로 불가능을 선언하면 안 된다. 실기기를 보는 사람의 관찰이 언제나 더 강하다.
 
@@ -97,6 +101,8 @@ The room background is too short for modern phone aspect ratios, so the bottom s
 
 Then I opened the preview and found small marks repeating in a vertical column down the right side. The bottom edge of a book stack intruded into the top three rows of the strip, and that got tiled all the way down. Why the existing check missed it is the interesting part: it compares column *averages*, and a narrow dark mark disappears into a 48-row average — deviation 4.2. An average cannot see "something small, repeated many times." Switching to per-pixel outlier detection found 39 in the same strip.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/thirteen-bundles-in-one-day/mean-blind-spot.en.svg"><img src="/assets/img/posts/thirteen-bundles-in-one-day/mean-blind-spot.en.svg" width="720" height="260" loading="lazy" alt="A 48-row tiled strip with small marks scattered across it. The column-mean check passes it with a deviation of 4.2 under the limit of 10; a per-pixel foreign-mark check finds 39 and fails it."></a></div><figcaption>An average can’t see something small repeated many times.</figcaption></figure>
+
 The same class of mistake showed up in color. Eight reasons, eight colors, and the report was that they were hard to tell apart. The existing test only asserted the colors *differed*, so a difference of 1 passed. Identical on screen; reassuring in CI. Re-measuring with perceptually weighted distance gave a minimum of 67.6; redistributing them 50° apart on the wheel brought it to 131.6.
 
 Passing a threshold isn't the end. The question is what the passing number isn't looking at.
@@ -118,6 +124,8 @@ That afternoon, for a third complaint ("the front of the desk isn't visible"), I
 Wrong. One look at the actual screen: "there's clearly space right now."
 
 The real cause was the flex configuration on the sticky-note row. Leftover height was distributed evenly between rows, so a row holding two small notes claimed far more height than its contents and sat there as empty space. The space wasn't missing. It was being wasted.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/thirteen-bundles-in-one-day/flex-waste.en.svg"><img src="/assets/img/posts/thirteen-bundles-in-one-day/flex-waste.en.svg" width="720" height="300" loading="lazy" alt="In the original layout the leftover height was split evenly, so the two-note row held empty padding. Sizing it to its content removed the padding and the desk front came into view."></a></div><figcaption>Space wasn’t short — it was being wasted.</figcaption></figure>
 
 The shape of the error is what stings. Every number in my calculation — screen height, element heights — was an estimate, and I packaged the result as a categorical impossibility. One bad estimate and the whole conclusion inverted. **Someone who can't see the screen shouldn't declare impossibility from a budget table.** The observation from the person holding the device always outranks it.
 

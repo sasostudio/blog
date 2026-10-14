@@ -29,6 +29,8 @@ tags: [claude-code, agents, agentroom, build-in-public]
 2. **qa는 물리적으로 읽기 전용이다.** 도구 권한에 Write/Edit 자체가 없어서 "조용히 고쳐놓기"가 불가능하다. 디스크의 실제 파일을 직접 읽고, dev의 *주장*과 대조한 뒤 판정을 내린다. 주장은 단서일 뿐, 증거는 파일이다.
 3. **되돌리기 어려운 일은 멈추고 사람에게 묻는다.** 방향 전환, git push, 파일 삭제, 배포. 이런 일 앞에서는 총괄이 반드시 멈추고 나에게 물어야 한다. 되돌리기 쉬운 일(코드 작성, 검수)만 무인으로 달린다.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/agentroom-human-gated-orchestration/roles.ko.svg"><img src="/assets/img/posts/agentroom-human-gated-orchestration/roles.ko.svg" width="720" height="350" loading="lazy" alt="관리자 아래 총괄(director)이 있고, 총괄이 planner·dev·qa 세 에이전트를 오간다. qa는 읽기 전용이며 dev의 완료는 qa를 거친다. 방향 전환·push·삭제·배포 앞에서는 총괄이 멈추고 관리자에게 묻는다."></a></div><figcaption>총괄이 세 에이전트를 오가되, 완료는 읽기 전용 qa를 거치고 되돌리기 어려운 일은 사람에게 묻는다.</figcaption></figure>
+
 매 턴은 재개용 필드와 함께 transcript 파일에 쌓인다. 세션이 중간에 죽어도 새 세션이 마지막 상태를 누군가의 기억이 아니라 디스크에서 복원해 이어간다. 실행을 시작할 때는 역할마다 어떤 모델을 쓸지 묻는다. 문제를 못 잡을 만큼 약한 qa는 이 설계 전체를 무너뜨리니까.
 
 ## 출시 당일, 내 도구에 설득당한 순간
@@ -40,6 +42,8 @@ tags: [claude-code, agents, agentroom, build-in-public]
 그런데 시스템이 정확히 설계대로 움직였다. 총괄은 dev가 만들었어야 할 파일을 디스크에서 찾았고, 없다는 걸 확인한 뒤 에이전트가 유실됐다고 판정하고 다시 불렀다. 그리고 그 결과를 qa로 넘겼고, qa는 실제 파일을 읽고 승인했다. 실행은 자기 인프라의 실패를 *우회해서* 올바르게 끝났다.
 
 그 실패는 나에게 거짓 "완료"로 도착하지 않았다. 복구 과정이 담긴 transcript 한 줄로 도착했다. 근본 원인은 그날 바로 고쳤고(총괄 규칙에 동기 호출 의무화), v1.0을 공개했다.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/agentroom-human-gated-orchestration/launch-day-recovery.ko.svg"><img src="/assets/img/posts/agentroom-human-gated-orchestration/launch-day-recovery.ko.svg" width="720" height="220" loading="lazy" alt="dev 호출이 소리 없이 증발하자 총괄이 디스크에서 결과 파일이 없음을 확인하고 유실로 판정해 다시 부른다. qa가 실제 파일을 읽고 승인했고, 관리자에게는 transcript 한 줄로 도착했다."></a></div><figcaption>출시 당일의 첫 실행. 도구가 자기 인프라의 실패를 상태 검증으로 우회했다.</figcaption></figure>
 
 "주장을 믿지 말고 상태를 검증하라"를 원칙으로 내세운 도구가, 정작 그 말대로 주장을 믿지 않고 상태를 검증해 자기 출시 버그를 잡은 것이다. 이 정도면 됐다 싶었다.
 
@@ -77,6 +81,8 @@ So I built AgentRoom — a small orchestration layer for Claude Code where one s
 2. **qa is read-only — physically.** Its tool permissions don't include Write or Edit, so it can't "fix things quietly". It has to read the actual files on disk, compare them against what dev *claimed*, and return a verdict. Claims are leads; files are evidence.
 3. **Irreversible things stop and ask the human.** Direction changes, git pushes, deletions, deploys — the director must stop and ask me. Reversible work (writing code, reviewing it) runs unattended.
 
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/agentroom-human-gated-orchestration/roles.en.svg"><img src="/assets/img/posts/agentroom-human-gated-orchestration/roles.en.svg" width="720" height="350" loading="lazy" alt="A director sits under the human and moves between planner, dev, and qa. qa is read-only and every “done” goes through it. Before direction changes, pushes, deletions, or deploys, the director stops and asks the human."></a></div><figcaption>The director moves between three agents; “done” goes through a read-only qa, and anything hard to undo goes to a human.</figcaption></figure>
+
 Every turn gets appended to a transcript file with resume fields, so if the session dies mid-run, a fresh session picks up exactly where the last one stopped — from disk, not from anyone's memory. And at the start of each run it asks which model to use for each role, because a QA agent that's too weak to catch problems quietly defeats the whole design.
 
 ### The launch-day bug that sold me on my own tool
@@ -88,6 +94,8 @@ During the very first end-to-end test, the first dev agent **silently vanished**
 And then the system did exactly what it was designed to do: the director checked the disk for the file dev was supposed to create, found nothing, declared the agent lost, re-spawned it, and routed the result through qa — which read the actual file and approved. The run finished correctly *around* its own infrastructure failure.
 
 The failure never reached me as a false "done". It reached me as a transcript line showing a recovery. I fixed the root cause the same day (synchronous agent calls are now mandatory in the director's rules) and shipped v1.0.
+
+<figure class="diagram"><div class="fig-scroll"><a href="/assets/img/posts/agentroom-human-gated-orchestration/launch-day-recovery.en.svg"><img src="/assets/img/posts/agentroom-human-gated-orchestration/launch-day-recovery.en.svg" width="720" height="220" loading="lazy" alt="A dev spawn silently vanishes; the director checks the disk, finds no output file, marks it lost and re-spawns it. qa reads the real files and approves, and the human receives a single transcript line."></a></div><figcaption>The first launch-day run: the tool routed around its own infrastructure failure by verifying state.</figcaption></figure>
 
 A tool whose whole thesis is "don't trust claims, verify state" caught its own launch bug by not trusting a claim and verifying state. I'll take that.
 
