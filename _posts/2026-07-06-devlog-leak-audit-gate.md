@@ -36,7 +36,7 @@ tags: [claude-code, agents, build-in-public, devlog]
 
 조립이 끝나면 최종본은 **독립 감사 에이전트**한테 넘어간다. 이 에이전트의 프롬프트는 "유출 있는지 봐줘"가 아니다. **"유출은 있다고 가정하고, 없다는 걸 반박해봐라(refute)."** 기본값을 유죄로 놓고, 무죄를 입증하게 만든다.
 
-감사자는 **읽기 전용**이다. 도구 권한에 Write/Edit가 없다. 이건 [지난 글에서 만든 AgentRoom](https://github.com/sasostudio/agentroom)의 QA 에이전트와 똑같은 원칙이다. 검수자가 조용히 고쳐놓을 수 있으면 그건 검수가 아니다. 감사자는 문제를 찾아 보고만 하고, 수정은 본체가 한 뒤 **재감사**를 받는다. 통과 전엔 게시 안 된다.
+감사자는 **읽기 전용**이다. 도구 권한에 Write/Edit가 없다. 이건 [지난 글에서 만든 AgentRoom](/2026/07/05/agentroom-human-gated-orchestration/)의 QA 에이전트와 똑같은 원칙이다. 검수자가 조용히 고쳐놓을 수 있으면 그건 검수가 아니다. 감사자는 문제를 찾아 보고만 하고, 수정은 본체가 한 뒤 **재감사**를 받는다. 통과 전엔 게시 안 된다.
 
 검사는 4계층으로 나뉜다:
 
@@ -87,7 +87,7 @@ So instead of a permanent ledger, I keep a **queue that gets emptied.** Whenever
 
 Once assembly is done, the final draft goes to an **independent audit agent.** Its prompt isn't "check whether there's a leak." It's **"assume a leak exists, and try to refute that there isn't one."** The default is guilty; innocence has to be proven.
 
-The auditor is **read-only.** Its tool permissions don't include Write or Edit. This is the exact same principle as the QA agent in [AgentRoom, from the last post](https://github.com/sasostudio/agentroom) — if a reviewer can quietly fix things, it isn't a review. The auditor only finds and reports; the main process fixes, then submits for a **re-audit.** Nothing publishes until it passes.
+The auditor is **read-only.** Its tool permissions don't include Write or Edit. This is the exact same principle as the QA agent in [AgentRoom, from the last post](/2026/07/05/agentroom-human-gated-orchestration/) — if a reviewer can quietly fix things, it isn't a review. The auditor only finds and reports; the main process fixes, then submits for a **re-audit.** Nothing publishes until it passes.
 
 The check runs in four layers:
 
