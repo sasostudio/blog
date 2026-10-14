@@ -4,7 +4,7 @@ Source for [sasostudio.dev](https://sasostudio.dev) — studio intro, selected w
 `saso-studio.vercel.app` permanently redirects here (`vercel.json`), except `/app-ads.txt` and the Search Console verification file, which stay served at the old host.
 
 Custom Jekyll site (no theme gem). Deployed by **Vercel** (project `saso-studio`, repo-connected, push to `main` → production).
-The old address [chpark03.github.io](https://chpark03.github.io) is frozen as redirect stubs (`redirects/` + GitHub Actions).
+The older address chpark03.github.io no longer resolves — the GitHub account was renamed to `sasostudio` (2026-10-14), and GitHub does not redirect Pages sites across a rename, so the redirect stubs and the Pages workflow were retired.
 
 ## Structure
 
@@ -16,7 +16,6 @@ The old address [chpark03.github.io](https://chpark03.github.io) is frozen as re
 - `_includes/` — `log-item`, `work-item` (project row), `play-buttons` (store buttons from a project's `play:` list)
 - Post front matter: `project:` (links the post to a `_projects/` card) · optional `description:` (summary box + SEO/share description). Posts keep the KO → `---` → `## English version` structure; the post layout splits on it for the KO/EN switch.
 - `assets/css/main.css` — full design system ("검증 원장" ledger: paper light single theme; seal-stamp verdict motif)
-- `redirects/` — static redirect stubs served at chpark03.github.io (excluded from Jekyll build)
 - `vercel.json` — Vercel build config (`bundle exec jekyll build` → `_site`) + old-host redirect
 - `feed.xml` — copy of the jekyll-feed template with entry IDs pinned to `feed.id_base` (`_config.yml`), so a domain change never re-surfaces old posts in feed readers
 

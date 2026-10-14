@@ -40,4 +40,3 @@ exclude:
   - Gemfile.lock
   - vendor
   - vercel.json
-  - redirects
